@@ -10,8 +10,13 @@ on:
   workflow_dispatch:
     inputs:
       git_ref:
-        description: Git ref (tag, branch or commit hash) with helm chart to deploy
+        description: Git ref (tag, branch or commit hash) to deploy
         required: true
+      trigger_release:
+        type: boolean
+        description: "Trigger release"
+        required: true
+        default: true
 
 jobs:
   build:
@@ -38,7 +43,7 @@ jobs:
           echo CUSTOM_VERSION=${CUSTOM_VERSION}
 
       - name: Release
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') || github.event.inputs.trigger_release }}
         run: |
           echo "Releasing ..."
 
